@@ -44,11 +44,13 @@ export default function AuthGate({ children, onLoginStateChange }: AuthGateProps
     onLoginStateChange();
 
     if (isRegister) {
+      localStorage.removeItem('snippy_ftui_completed');
       setFtueStep(1); // Start onboarding!
     }
   };
 
   const handleDemo = () => {
+    localStorage.removeItem('snippy_ftui_completed');
     const demoSession: UserSession = {
       name: 'Demo Tuinier',
       email: 'demo@snippy.nl',

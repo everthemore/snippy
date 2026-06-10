@@ -298,6 +298,7 @@ export default function Settings() {
           </p>
           <button
             onClick={() => {
+              localStorage.removeItem('snippy_ftui_completed');
               localStorage.setItem('snippy_ftui_step', '1');
               window.dispatchEvent(new Event('ftuiStateChange'));
               navigate('/map');

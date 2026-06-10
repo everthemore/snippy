@@ -211,12 +211,18 @@ const GardenCanvas: React.FC<GardenCanvasProps> = ({
   }, [parcelMercatorInfo]);
 
   useEffect(() => {
-    const positions: Record<string, { x: number; y: number }> = {};
-    plants.forEach(p => {
-      positions[p.id] = { x: p.position.x, y: p.position.y };
+    setLocalPlantPositions(prev => {
+      const positions: Record<string, { x: number; y: number }> = {};
+      plants.forEach(p => {
+        if (draggingPlant && draggingPlant.id === p.id) {
+          positions[p.id] = prev[p.id] || { x: p.position.x, y: p.position.y };
+        } else {
+          positions[p.id] = { x: p.position.x, y: p.position.y };
+        }
+      });
+      return positions;
     });
-    setLocalPlantPositions(positions);
-  }, [plants]);
+  }, [plants, draggingPlant]);
 
   const [showLayerMenu, setShowLayerMenu] = useState(false);
   const [backgroundLayer, setBackgroundLayer] = useState<'none' | 'bgt'>('bgt');
@@ -391,10 +397,6 @@ const GardenCanvas: React.FC<GardenCanvasProps> = ({
       ...prev,
       [draggingPlant.id]: { x: newX, y: newY }
     }));
-    
-    if (e.pointerType === 'mouse' || e.buttons === 0) {
-      onPlantMove?.(draggingPlant.id, newX, newY);
-    }
   };
 
   const handlePlantPointerUp = (e: React.PointerEvent) => {
@@ -818,6 +820,7 @@ const GardenCanvas: React.FC<GardenCanvasProps> = ({
             const isLocked = plant.locked;
             const fullName = plantNames?.[plant.id] || plant.nickname || plant.plantId || 'Plant';
             const shortName = fullName.length > 10 ? fullName.slice(0, 10) + '…' : fullName;
+            const isDragging = draggingPlant?.id === plant.id;
             return (
               <g 
                 key={plant.id} 
@@ -826,7 +829,7 @@ const GardenCanvas: React.FC<GardenCanvasProps> = ({
                   cursor: isLocked ? 'not-allowed' : (isEditMode ? 'default' : 'grab'),
                   transformBox: 'fill-box',
                   transformOrigin: 'center',
-                  transition: 'transform 0.15s ease-out'
+                  transition: isDragging ? 'none' : 'transform 0.15s ease-out'
                 }}
                 className={`group select-none hover:scale-[1.35] ${isEditMode ? 'opacity-40 pointer-events-none' : ''}`}
                 onPointerDown={e => handlePlantPointerDown(e, plant.id, pos.x, pos.y)}

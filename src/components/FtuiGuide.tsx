@@ -16,7 +16,13 @@ export default function FtuiGuide() {
     if (s) {
       setStep(parseInt(s, 10));
     } else {
-      setStep(null);
+      const completed = localStorage.getItem('snippy_ftui_completed');
+      if (!completed) {
+        localStorage.setItem('snippy_ftui_step', '1');
+        setStep(1);
+      } else {
+        setStep(null);
+      }
     }
   };
 
@@ -72,7 +78,7 @@ export default function FtuiGuide() {
       }
     } else if (step === 7 && location.pathname === '/calendar') {
       updateStep(8);
-    } else if (step === 8 && location.pathname === '/inventory') {
+    } else if (step === 85 && location.pathname === '/inventory') {
       updateStep(9);
     } else if (step === 10 && location.pathname === '/settings') {
       updateStep(11);
@@ -82,6 +88,7 @@ export default function FtuiGuide() {
   const updateStep = (newStep: number | null) => {
     if (newStep === null || newStep <= 0) {
       localStorage.removeItem('snippy_ftui_step');
+      localStorage.setItem('snippy_ftui_completed', 'true');
       setStep(null);
     } else {
       localStorage.setItem('snippy_ftui_step', newStep.toString());
@@ -111,6 +118,8 @@ export default function FtuiGuide() {
       navigate('/calendar');
       updateStep(8);
     } else if (step === 8) {
+      updateStep(85);
+    } else if (step === 85) {
       navigate('/inventory');
       updateStep(9);
     } else if (step === 9) {
@@ -145,6 +154,8 @@ export default function FtuiGuide() {
     } else if (step === 8) {
       navigate('/map');
       updateStep(7);
+    } else if (step === 85) {
+      updateStep(8);
     } else if (step === 9) {
       navigate('/calendar');
       updateStep(8);
@@ -208,8 +219,14 @@ export default function FtuiGuide() {
       },
       {
         stepNum: 8,
-        title: "Stap 7: De Snoeikalender 📅",
-        desc: "De kalender laat je precies zien wanneer welke planten gesnoeid mogen worden. Laten we nu de plantenkaarten bekijken: klik op 'Planten' in het zijmenu.",
+        title: "Stap 7: De Snoeikalender bekijken 📅",
+        desc: "Hier zie je de snoeikalender voor al je planten. De appelboom die je zojuist hebt toegevoegd staat in de lijst. Groene vakjes geven de optimale snoeimaanden aan. Bekijk de kalender rustig en klik op 'Volgende stap' om verder te gaan.",
+        btn: "Volgende stap",
+      },
+      {
+        stepNum: 85,
+        title: "Stap 7a: Navigeer naar Planten 🌿",
+        desc: "Laten we nu de plantenkaarten bekijken: klik op 'Planten' in het zijmenu om naar de inventaris te gaan.",
         btn: "Naar Planten",
       },
       {
@@ -239,7 +256,7 @@ export default function FtuiGuide() {
       {
         stepNum: 11,
         title: "Stap 10: AI-sleutel instellen 🔑",
-        desc: "In de instellingen kun je 'Gemini Cloud' selecteren en je eigen API-sleutel invoeren om slim advies te activeren. Klik op 'Rondleiding afronden' om te finishen!",
+        desc: "In de instellingen kun je 'Gemini Cloud' selecteren en je eigen API-sleutel invoeren om slim advies te activeren. Je kunt de rondleiding later altijd opnieuw starten vanaf deze instellingenpagina. Klik op 'Rondleiding afronden' om te finishen!",
         btn: "Rondleiding afronden",
       }
     ] : [
@@ -287,8 +304,14 @@ export default function FtuiGuide() {
       },
       {
         stepNum: 8,
-        title: "Step 7: Pruning Calendar 📅",
-        desc: "The calendar displays optimal months for your garden. Let's inspect the plant cards: click 'Plants' in the sidebar.",
+        title: "Step 7: View Pruning Calendar 📅",
+        desc: "Here you can see the pruning calendar for your plants. The apple tree you just added is listed here. Green blocks show the optimal pruning months. Take a look and click 'Next step' to continue.",
+        btn: "Next step",
+      },
+      {
+        stepNum: 85,
+        title: "Step 7a: Go to Plants 🌿",
+        desc: "Let's inspect the plant cards: click 'Plants' in the sidebar to go to the inventory.",
         btn: "Go to Plants",
       },
       {
@@ -318,7 +341,7 @@ export default function FtuiGuide() {
       {
         stepNum: 11,
         title: "Step 10: Configure API Key 🔑",
-        desc: "Finally, select 'Gemini Cloud' and enter your API key to activate AI advice. Click 'Finish Tour' to complete!",
+        desc: "Finally, select 'Gemini Cloud' and enter your API key to activate AI advice. You can always restart the tour later from this settings page. Click 'Finish Tour' to complete!",
         btn: "Finish Tour",
       }
     ];
@@ -329,7 +352,21 @@ export default function FtuiGuide() {
   const currentData = getStepData();
 
   // Steps that require blocking backdrop
-  const isBlockingStep = [2, 3, 4, 5, 6, 7, 8, 9, 91, 92, 10, 11].includes(step);
+  const isBlockingStep = [2, 3, 4, 5, 6, 7, 8, 85, 9, 91, 92, 10, 11].includes(step);
+
+  const getStepLabel = () => {
+    if (step === 91) return language === 'nl' ? 'Stap 8a van 10' : 'Step 8a of 10';
+    if (step === 92) return language === 'nl' ? 'Stap 8b van 10' : 'Step 8b of 10';
+    if (step === 85) return language === 'nl' ? 'Stap 7a van 10' : 'Step 7a of 10';
+    
+    // For normal steps:
+    // step 2 -> Stap 1
+    // step 3 -> Stap 2
+    // ...
+    // step 11 -> Stap 10
+    const num = step >= 10 ? step - 1 : step - 1;
+    return language === 'nl' ? `Stap ${num} van 10` : `Step ${num} of 10`;
+  };
 
   return (
     <>
@@ -370,7 +407,7 @@ export default function FtuiGuide() {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 uppercase tracking-widest">
               <Sparkles className="w-4 h-4 animate-pulse" />
-              <span>{language === 'nl' ? `Rondleiding: Stap ${step === 91 ? '5a' : step === 92 ? '5b' : step >= 10 ? step - 2 : step - 1} van 10` : `Onboarding: Step ${step === 91 ? '5a' : step === 92 ? '5b' : step >= 10 ? step - 2 : step - 1} of 10`}</span>
+              <span>{language === 'nl' ? `Rondleiding: ${getStepLabel()}` : `Onboarding: ${getStepLabel()}`}</span>
             </div>
             <button
               onClick={() => updateStep(null)}

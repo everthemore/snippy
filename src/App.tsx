@@ -45,7 +45,7 @@ function AppContent() {
       <div className="flex min-h-screen bg-slate-50">
         {/* Sidebar */}
         {(() => {
-          const isSidebarTourActive = ftuiStep !== null && [2, 7, 8, 10].includes(ftuiStep);
+          const isSidebarTourActive = ftuiStep !== null && [2, 7, 85, 10].includes(ftuiStep);
 
           const getLinkClass = (targetStep: number) => {
             const baseClass = "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group";
@@ -81,7 +81,7 @@ function AppContent() {
                   </Link>
                   <Link 
                     to="/inventory" 
-                    className={getLinkClass(8)}
+                    className={getLinkClass(85)}
                   >
                     <Leaf className="w-5 h-5 group-hover:scale-110 transition-transform" />
                     <span className="font-medium">{t('inventory')}</span>

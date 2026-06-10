@@ -12,13 +12,25 @@ export default function Calendar() {
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [gardenPlants, setGardenPlants] = useState(() => db.getGardenPlants());
+  const [ftuiStep, setFtuiStep] = useState<number | null>(() => {
+    const s = localStorage.getItem('snippy_ftui_step');
+    return s ? parseInt(s, 10) : null;
+  });
 
   useEffect(() => {
     const handleRefresh = () => {
       setGardenPlants(db.getGardenPlants());
     };
+    const handleSync = () => {
+      const s = localStorage.getItem('snippy_ftui_step');
+      setFtuiStep(s ? parseInt(s, 10) : null);
+    };
     window.addEventListener('gardenSwitch', handleRefresh);
-    return () => window.removeEventListener('gardenSwitch', handleRefresh);
+    window.addEventListener('ftuiStateChange', handleSync);
+    return () => {
+      window.removeEventListener('gardenSwitch', handleRefresh);
+      window.removeEventListener('ftuiStateChange', handleSync);
+    };
   }, []);
 
   const plantsWithDetails = gardenPlants.map(gp => ({
@@ -51,7 +63,7 @@ export default function Calendar() {
         </div>
       </div>
 
-      <div className="mb-12">
+      <div className={`mb-12 ${ftuiStep === 8 ? 'relative z-[9999] ring-4 ring-emerald-500 rounded-[32px] shadow-2xl p-4 bg-white transition-all duration-300' : ''}`}>
         <TrimmingMatrix 
           plants={plantsWithDetails} 
           onCellClick={handleCellClick} 
