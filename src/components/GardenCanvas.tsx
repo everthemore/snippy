@@ -825,62 +825,65 @@ const GardenCanvas: React.FC<GardenCanvasProps> = ({
               <g 
                 key={plant.id} 
                 transform={`translate(${pos.x}, ${pos.y})`}
-                style={{ 
-                  cursor: isLocked ? 'not-allowed' : (isEditMode ? 'default' : 'grab'),
-                  transformBox: 'fill-box',
-                  transformOrigin: 'center',
-                  transition: isDragging ? 'none' : 'transform 0.15s ease-out'
-                }}
-                className={`group select-none hover:scale-[1.35] ${isEditMode ? 'opacity-40 pointer-events-none' : ''}`}
-                onPointerDown={e => handlePlantPointerDown(e, plant.id, pos.x, pos.y)}
-                onPointerUp={handlePlantPointerUp}
-                onContextMenu={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.nativeEvent.stopImmediatePropagation();
-                  const rect = containerRef.current?.getBoundingClientRect();
-                  if (rect) {
-                    setContextMenu({
-                      x: e.clientX - rect.left,
-                      y: e.clientY - rect.top,
-                      type: 'plant',
-                      targetId: plant.id
-                    });
-                  }
-                }}
               >
-                <title>{fullName}{isLocked ? ' (locked)' : ''}</title>
-                {/* Plant circle — smaller r=0.9 */}
-                <circle r="0.9" fill="white" stroke={isLocked ? '#f87171' : '#10b981'} strokeWidth="0.22" />
-                <foreignObject x="-0.6" y="-0.6" width="1.2" height="1.2" style={{ pointerEvents: 'none' }}>
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon className="w-0.85 h-0.85 text-emerald-600" />
-                  </div>
-                </foreignObject>
-                
-                {/* Lock badge — scaled down and translated closer */}
                 <g
-                  transform="translate(0.7, -0.7) scale(0.65)"
-                  onPointerDown={e => e.stopPropagation()}
-                  onClick={e => { e.stopPropagation(); onPlantLockToggle?.(plant.id); }}
-                  style={{ cursor: 'pointer' }}
+                  style={{ 
+                    cursor: isLocked ? 'not-allowed' : (isEditMode ? 'default' : 'grab'),
+                    transformBox: 'fill-box',
+                    transformOrigin: 'center',
+                    transition: isDragging ? 'none' : 'transform 0.15s ease-out'
+                  }}
+                  className={`group select-none hover:scale-[1.35] ${isEditMode ? 'opacity-40 pointer-events-none' : ''}`}
+                  onPointerDown={e => handlePlantPointerDown(e, plant.id, pos.x, pos.y)}
+                  onPointerUp={handlePlantPointerUp}
+                  onContextMenu={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.nativeEvent.stopImmediatePropagation();
+                    const rect = containerRef.current?.getBoundingClientRect();
+                    if (rect) {
+                      setContextMenu({
+                        x: e.clientX - rect.left,
+                        y: e.clientY - rect.top,
+                        type: 'plant',
+                        targetId: plant.id
+                      });
+                    }
+                  }}
                 >
-                  <circle r="0.65" fill="white" stroke={isLocked ? '#f87171' : '#cbd5e1'} strokeWidth="0.12" />
-                  {isLocked
-                    ? <path d="M-0.3 0.07 h0.6 v0.4 h-0.6 z M-0.18 0.07 v-0.18 a0.18 0.18 0 0 1 0.36 0 v0.18" fill="none" stroke="#ef4444" strokeWidth="0.12" strokeLinecap="round"/>
-                    : <path d="M-0.3 0.07 h0.6 v0.4 h-0.6 z M-0.18 0.07 v-0.18 a0.18 0.18 0 0 1 0.33 -0.08" fill="none" stroke="#94a3b8" strokeWidth="0.12" strokeLinecap="round"/>
-                  }
+                  <title>{fullName}{isLocked ? ' (locked)' : ''}</title>
+                  {/* Plant circle — smaller r=0.9 */}
+                  <circle r="0.9" fill="white" stroke={isLocked ? '#f87171' : '#10b981'} strokeWidth="0.22" />
+                  <foreignObject x="-0.6" y="-0.6" width="1.2" height="1.2" style={{ pointerEvents: 'none' }}>
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon className="w-0.85 h-0.85 text-emerald-600" />
+                    </div>
+                  </foreignObject>
+                  
+                  {/* Lock badge — scaled down and translated closer */}
+                  <g
+                    transform="translate(0.7, -0.7) scale(0.65)"
+                    onPointerDown={e => e.stopPropagation()}
+                    onClick={e => { e.stopPropagation(); onPlantLockToggle?.(plant.id); }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <circle r="0.65" fill="white" stroke={isLocked ? '#f87171' : '#cbd5e1'} strokeWidth="0.12" />
+                    {isLocked
+                      ? <path d="M-0.3 0.07 h0.6 v0.4 h-0.6 z M-0.18 0.07 v-0.18 a0.18 0.18 0 0 1 0.36 0 v0.18" fill="none" stroke="#ef4444" strokeWidth="0.12" strokeLinecap="round"/>
+                      : <path d="M-0.3 0.07 h0.6 v0.4 h-0.6 z M-0.18 0.07 v-0.18 a0.18 0.18 0 0 1 0.33 -0.08" fill="none" stroke="#94a3b8" strokeWidth="0.12" strokeLinecap="round"/>
+                    }
+                  </g>
+                  
+                  {/* Name below */}
+                  <text 
+                    y="1.8" 
+                    textAnchor="middle"
+                    fill="#475569"
+                    style={{ fontSize: '0.85px', pointerEvents: 'none', userSelect: 'none', fontWeight: 600 }}
+                  >
+                    {shortName}
+                  </text>
                 </g>
-                
-                {/* Name below */}
-                <text 
-                  y="1.8" 
-                  textAnchor="middle"
-                  fill="#475569"
-                  style={{ fontSize: '0.85px', pointerEvents: 'none', userSelect: 'none', fontWeight: 600 }}
-                >
-                  {shortName}
-                </text>
               </g>
             );
           })}
