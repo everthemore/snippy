@@ -13,6 +13,8 @@ interface PlantCardProps {
   isFtuiTarget?: boolean;
 }
 
+let globalLastClosedTime = 0;
+
 const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDelete, isFtuiTarget }) => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
@@ -33,11 +35,19 @@ const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDele
   }, []);
 
   const handleOpenInfo = () => {
+    if (Date.now() - globalLastClosedTime < 450) {
+      return; // Prevent ghost click reopening globally
+    }
     setIsInfoModalOpen(true);
     window.dispatchEvent(new Event('ftuiInfoModalOpen'));
   };
 
-  const handleCloseInfo = () => {
+  const handleCloseInfo = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+    globalLastClosedTime = Date.now();
     setIsInfoModalOpen(false);
     window.dispatchEvent(new Event('ftuiInfoModalClose'));
   };
@@ -204,7 +214,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDele
         <div className="bg-white rounded-[32px] shadow-2xl border border-slate-100 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 relative flex flex-col gap-6 animate-in zoom-in-95 duration-200">
           {/* Close button */}
           <button 
-            onClick={handleCloseInfo}
+            onClick={(e) => handleCloseInfo(e)}
             id="ftui-modal-close"
             className={`absolute top-6 right-6 p-2 rounded-full transition-colors font-bold z-20 w-8 h-8 flex items-center justify-center ${
               ftuiStep === 91

@@ -56,6 +56,17 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
     }
     window.dispatchEvent(new Event('ftuiStateChange'));
   };
+
+  const isAllowedSuggestion = (plantId: string) => {
+    if (ftuiStep === 6) {
+      return plantId === 'apple-001';
+    }
+    if (ftuiStep === 63) {
+      return plantId === 'boxwood-001';
+    }
+    return true;
+  };
+
   const [aiProgress, setAiProgress] = useState<string>('');
 
   // Configuration settings (Step 2)
@@ -236,10 +247,12 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
                   setStep('search');
                   if (ftuiStep === 5) {
                     updateFtuiStep(6);
+                  } else if (ftuiStep === 62) {
+                    updateFtuiStep(63);
                   }
                 }}
                 className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all group text-left ${
-                  ftuiStep === 5
+                  (ftuiStep === 5 || ftuiStep === 62)
                     ? 'relative z-[9999] bg-emerald-50 border-emerald-500 ring-4 ring-emerald-400 shadow-lg scale-102 animate-pulse pointer-events-auto'
                     : 'border-slate-100 hover:border-emerald-500 hover:bg-emerald-50'
                 }`}
@@ -255,10 +268,10 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
               </button>
 
               <button 
-                disabled={ftuiStep === 5}
+                disabled={ftuiStep === 5 || ftuiStep === 62}
                 onClick={() => setStep('search')}
                 className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all group text-left ${
-                  ftuiStep === 5
+                  (ftuiStep === 5 || ftuiStep === 62)
                     ? 'opacity-30 pointer-events-none border-slate-100'
                     : 'border-slate-100 hover:border-emerald-500 hover:bg-emerald-50'
                 }`}
@@ -274,10 +287,10 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
               </button>
 
               <button 
-                disabled={ftuiStep === 5}
+                disabled={ftuiStep === 5 || ftuiStep === 62}
                 onClick={() => setStep('search')}
                 className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 transition-all group text-left ${
-                  ftuiStep === 5
+                  (ftuiStep === 5 || ftuiStep === 62)
                     ? 'opacity-30 pointer-events-none border-slate-100'
                     : 'border-slate-100 hover:border-emerald-500 hover:bg-emerald-50'
                 }`}
@@ -301,9 +314,8 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
                 <input 
                   autoFocus
                   type="text" 
-                  placeholder={t('searchPlaceholder')} 
-                  className={`w-full pl-12 pr-4 py-4 bg-slate-50 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${
-                    ftuiStep === 6
+                  placeholder={t('searchPlaceholder')}                   className={`w-full pl-12 pr-4 py-4 bg-slate-50 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all ${
+                    (ftuiStep === 6 || ftuiStep === 63)
                       ? 'relative z-[9999] border-emerald-500 ring-4 ring-emerald-400 bg-white shadow-md pointer-events-auto'
                       : 'border-slate-200'
                   }`}
@@ -313,62 +325,74 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
               </div>
 
               <div className="space-y-2">
-                {searchResults.map((plant, idx) => (
-                  <button 
-                    key={plant.id}
-                    onClick={() => {
-                      setSelectedPredefinedPlant(plant);
-                      setSelectedSuggestion({
-                        title: plant.commonName,
-                        latinName: plant.latinName,
-                        description: plant.description,
-                        url: ''
-                      });
-                      setStep('configure');
-                    }}
-                    className={`w-full flex items-center justify-between p-4 rounded-xl transition-all group border ${
-                      ftuiStep === 6 && idx === 0
-                        ? 'border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50 ring-4 ring-emerald-450/40 animate-pulse'
-                        : 'border-transparent hover:bg-slate-50 hover:border-slate-100'
-                    }`}
-                  >
-                    <div>
-                      <h4 className="font-bold text-slate-800">{plant.commonName}</h4>
-                      <p className="text-xs italic text-slate-500">{plant.latinName}</p>
-                    </div>
-                    <Plus className="w-5 h-5 text-slate-300 group-hover:text-emerald-600" />
-                  </button>
-                ))}
+                {searchResults.map((plant) => {
+                  const allowed = isAllowedSuggestion(plant.id);
+                  return (
+                    <button 
+                      key={plant.id}
+                      disabled={ftuiStep !== null && !allowed}
+                      onClick={() => {
+                        setSelectedPredefinedPlant(plant);
+                        setSelectedSuggestion({
+                          title: plant.commonName,
+                          latinName: plant.latinName,
+                          description: plant.description,
+                          url: ''
+                        });
+                        setStep('configure');
+                      }}
+                      className={`w-full flex items-center justify-between p-4 rounded-xl transition-all group border ${
+                        ftuiStep !== null && !allowed
+                          ? 'opacity-30 pointer-events-none'
+                          : (ftuiStep === 6 || ftuiStep === 63) && allowed
+                            ? 'border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50 ring-4 ring-emerald-450/40 animate-pulse pointer-events-auto'
+                            : 'border-transparent hover:bg-slate-50 hover:border-slate-100'
+                      }`}
+                    >
+                      <div>
+                        <h4 className="font-bold text-slate-800">{plant.commonName}</h4>
+                        <p className="text-xs italic text-slate-500">{plant.latinName}</p>
+                      </div>
+                      <Plus className="w-5 h-5 text-slate-300 group-hover:text-emerald-600" />
+                    </button>
+                  );
+                })}
 
                 {wikiSuggestions.length > 0 && (
                   <div className="pt-4 border-t border-slate-100 mt-4">
                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">{t('liveSuggestions')}</h4>
                     <div className="space-y-2">
-                      {wikiSuggestions.map((s, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleWikiSuggestionClick(s)}
-                          className={`w-full flex items-center justify-between p-4 rounded-xl transition-all group text-left border ${
-                            ftuiStep === 6 && idx === 0 && searchResults.length === 0
-                              ? 'border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50 ring-4 ring-emerald-450/40 animate-pulse'
-                              : 'border-transparent hover:bg-emerald-50/50 hover:border-emerald-100/50'
-                          }`}
-                        >
-                          <div className="pr-4 flex-1">
-                            <h4 className="font-bold text-slate-800 flex items-center gap-2">
-                              {s.title}
-                            </h4>
-                            {s.latinName && (
-                              <p className="text-xs italic text-emerald-600 font-medium">{s.latinName}</p>
-                            )}
-                            <p className="text-xs text-slate-500 line-clamp-1">{s.description}</p>
-                          </div>
-                          <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-1 rounded-md group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                            <Sparkles className="w-3 h-3" />
-                            {t('getSchedule')}
-                          </span>
-                        </button>
-                      ))}
+                      {wikiSuggestions.map((s, idx) => {
+                        const allowed = isAllowedSuggestion('');
+                        return (
+                          <button
+                            key={idx}
+                            disabled={ftuiStep !== null && !allowed}
+                            onClick={() => handleWikiSuggestionClick(s)}
+                            className={`w-full flex items-center justify-between p-4 rounded-xl transition-all group text-left border ${
+                              ftuiStep !== null && !allowed
+                                ? 'opacity-30 pointer-events-none'
+                                : (ftuiStep === 6 || ftuiStep === 63) && allowed
+                                  ? 'border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50 ring-4 ring-emerald-450/40 animate-pulse pointer-events-auto'
+                                  : 'border-transparent hover:bg-emerald-50/50 hover:border-emerald-100/50'
+                            }`}
+                          >
+                            <div className="pr-4 flex-1">
+                              <h4 className="font-bold text-slate-800 flex items-center gap-2">
+                                {s.title}
+                              </h4>
+                              {s.latinName && (
+                                <p className="text-xs italic text-emerald-600 font-medium">{s.latinName}</p>
+                              )}
+                              <p className="text-xs text-slate-500 line-clamp-1">{s.description}</p>
+                            </div>
+                            <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-1 rounded-md group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                              <Sparkles className="w-3 h-3" />
+                              {t('getSchedule')}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -377,10 +401,11 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
                   <div className="pt-4 mt-4 border-t border-slate-100">
                     <p className="text-xs text-slate-500 mb-3 text-center">{t('cantFindWhatYouNeed')}</p>
                     <button 
+                      disabled={ftuiStep === 6 || ftuiStep === 63}
                       onClick={handleCustomQueryClick}
                       className={`w-full flex items-center justify-center gap-2 p-4 rounded-xl font-bold transition-colors border ${
-                        ftuiStep === 6 && searchResults.length === 0 && wikiSuggestions.length === 0
-                          ? 'border-emerald-550 bg-emerald-100 text-emerald-800 ring-4 ring-emerald-450/40 animate-pulse'
+                        ftuiStep === 6 || ftuiStep === 63
+                          ? 'opacity-30 pointer-events-none border-slate-200'
                           : 'bg-emerald-550/10 text-emerald-700 hover:bg-emerald-100 border-emerald-200'
                       }`}
                     >

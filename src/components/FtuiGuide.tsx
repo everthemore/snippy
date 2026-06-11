@@ -114,6 +114,12 @@ export default function FtuiGuide() {
     } else if (step === 5) {
       updateStep(6);
     } else if (step === 6) {
+      updateStep(61);
+    } else if (step === 61) {
+      updateStep(62);
+    } else if (step === 62) {
+      updateStep(63);
+    } else if (step === 63) {
       updateStep(7);
     } else if (step === 7) {
       navigate('/calendar');
@@ -150,8 +156,14 @@ export default function FtuiGuide() {
       updateStep(4);
     } else if (step === 6) {
       updateStep(5);
+    } else if (step === 61) {
+      updateStep(6);
+    } else if (step === 62) {
+      updateStep(61);
+    } else if (step === 63) {
+      updateStep(62);
     } else if (step === 7) {
-      updateStep(4); // Back to element placement
+      updateStep(63);
     } else if (step === 8) {
       navigate('/map');
       updateStep(7);
@@ -209,19 +221,37 @@ export default function FtuiGuide() {
       {
         stepNum: 6,
         title: "Stap 5: Zoek een Appelboom 🍎",
-        desc: "Typ 'Appelboom' (of iets anders) in het zoekveld, kies een ras uit de lijst en klik op 'Kalender ophalen' om de boom toe te voegen.",
+        desc: "Typ 'Appelboom' in het zoekveld, kies de Appelboom suggestie uit de lijst en klik op 'Kalender ophalen' om de boom toe te voegen. Andere suggesties zijn nu grijs.",
+        btn: "Volgende",
+      },
+      {
+        stepNum: 61,
+        title: "Stap 5a: Voeg nog een plant toe: Buxus 🌿",
+        desc: "We gaan nu een Buxus toevoegen aan je tuin. Klik opnieuw op de gehighlighte knop 'Plant toevoegen'.",
+        btn: "Volgende",
+      },
+      {
+        stepNum: 62,
+        title: "Stap 5b: Selecteer toevoegmethode 🔍",
+        desc: "Klik weer op de gehighlighte knop 'Zoeken op naam'. Andere methodes zijn geblokkeerd.",
+        btn: "Volgende",
+      },
+      {
+        stepNum: 63,
+        title: "Stap 5c: Zoek Buxus 🌳",
+        desc: "Typ 'Buxus' in het zoekveld, kies de Buxus suggestie en klik op 'Kalender ophalen' om de Buxus toe te voegen. Alle andere resultaten zijn geblokkeerd.",
         btn: "Volgende",
       },
       {
         stepNum: 7,
-        title: "Stap 6: Boom op de kaart! 🗺️",
-        desc: "Je nieuwe boom is toegevoegd aan de interactieve 2D-kaart! Je kunt hem later verslepen om te positioneren. Laten we nu de Snoeikalender bekijken: klik op 'Kalender' in het zijmenu.",
+        title: "Stap 6: Planten op de kaart! 🗺️",
+        desc: "Je nieuwe planten zijn toegevoegd aan de interactieve 2D-kaart! Je kunt ze later verslepen om te positioneren. Laten we nu de Snoeikalender bekijken: klik op 'Kalender' in het zijmenu.",
         btn: "Naar Kalender",
       },
       {
         stepNum: 8,
         title: "Stap 7: De Snoeikalender bekijken 📅",
-        desc: "Hier zie je de snoeikalender voor al je planten. De appelboom die je zojuist hebt toegevoegd staat in de lijst. Groene vakjes geven de optimale snoeimaanden aan. Bekijk de kalender rustig en klik op 'Volgende stap' om verder te gaan.",
+        desc: "Hier zie je de snoeikalender voor al je planten. De appelboom en buxus die je zojuist hebt toegevoegd staan in de lijst. Groene, oranje en rode vakjes geven het snoeiadvies aan. Bekijk de kalender rustig en klik op 'Volgende stap' om verder te gaan.",
         btn: "Volgende stap",
       },
       {
@@ -294,19 +324,37 @@ export default function FtuiGuide() {
       {
         stepNum: 6,
         title: "Step 5: Add an Apple Tree 🍎",
-        desc: "Type 'Apple Tree' in the input, select a variety and click 'Get Schedule' to add it.",
+        desc: "Type 'Apple Tree' in the input, select the Apple Tree suggestion. All other suggestions are greyed out.",
+        btn: "Next",
+      },
+      {
+        stepNum: 61,
+        title: "Step 5a: Add another plant: Buxus 🌿",
+        desc: "We will now add a Buxus to your garden. Click the highlighted 'Add Plant' button again.",
+        btn: "Next",
+      },
+      {
+        stepNum: 62,
+        title: "Step 5b: Select method 🔍",
+        desc: "Click 'Search by name' in the highlighted section. Other methods are disabled.",
+        btn: "Next",
+      },
+      {
+        stepNum: 63,
+        title: "Step 5c: Search Buxus 🌳",
+        desc: "Type 'Buxus' in the search field, select the Buxus suggestion to add it. All other results are blocked.",
         btn: "Next",
       },
       {
         stepNum: 7,
-        title: "Step 6: Tree on the map! 🗺️",
-        desc: "Your new tree is placed on the SVG map. You can drag to position it later. Let's check the Pruning Calendar: click 'Calendar' in the sidebar.",
+        title: "Step 6: Plants on the map! 🗺️",
+        desc: "Your new plants are placed on the SVG map! Let's check the Pruning Calendar: click 'Calendar' in the sidebar.",
         btn: "Go to Calendar",
       },
       {
         stepNum: 8,
         title: "Step 7: View Pruning Calendar 📅",
-        desc: "Here you can see the pruning calendar for your plants. The apple tree you just added is listed here. Green blocks show the optimal pruning months. Take a look and click 'Next step' to continue.",
+        desc: "Here you can see the pruning calendar for your plants. The apple tree and buxus you just added are listed here. Green, orange, and red blocks show the pruning status. Look it over and click 'Next step' to continue.",
         btn: "Next step",
       },
       {
@@ -353,12 +401,15 @@ export default function FtuiGuide() {
   const currentData = getStepData();
 
   // Steps that require blocking backdrop
-  const isBlockingStep = [2, 3, 4, 5, 6, 7, 8, 85, 9, 91, 92, 10, 11].includes(step);
+  const isBlockingStep = [2, 3, 4, 5, 6, 61, 62, 63, 7, 8, 85, 9, 91, 92, 10, 11].includes(step);
 
   const getStepLabel = () => {
     if (step === 91) return language === 'nl' ? 'Stap 8a van 10' : 'Step 8a of 10';
     if (step === 92) return language === 'nl' ? 'Stap 8b van 10' : 'Step 8b of 10';
     if (step === 85) return language === 'nl' ? 'Stap 7a van 10' : 'Step 7a of 10';
+    if (step === 61) return language === 'nl' ? 'Stap 5a van 10' : 'Step 5a of 10';
+    if (step === 62) return language === 'nl' ? 'Stap 5b van 10' : 'Step 5b of 10';
+    if (step === 63) return language === 'nl' ? 'Stap 5c van 10' : 'Step 5c of 10';
     
     // For normal steps:
     // step 2 -> Stap 1

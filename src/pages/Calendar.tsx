@@ -69,7 +69,11 @@ export default function Calendar() {
         <div className="min-w-[750px] md:min-w-0">
           <TrimmingMatrix 
             plants={plantsWithDetails} 
-            onCellClick={handleCellClick} 
+            onCellClick={(plant, month) => {
+              if (ftuiStep !== 8) {
+                handleCellClick(plant, month);
+              }
+            }} 
           />
         </div>
       </div>

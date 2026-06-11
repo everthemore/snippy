@@ -268,6 +268,8 @@ export default function MapPage() {
     const currentStep = localStorage.getItem('snippy_ftui_step');
     if (currentStep === '6' || currentStep === '5') {
       localStorage.setItem('snippy_ftui_added_plant_id', newPlant.id);
+      updateFtuiStep(61);
+    } else if (currentStep === '63' || currentStep === '62') {
       updateFtuiStep(7);
     }
     
@@ -462,20 +464,20 @@ export default function MapPage() {
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  disabled={ftuiStep === 4}
+                  disabled={ftuiStep === 4 || ftuiStep === 61}
                   onClick={handleAddLawn}
                   className={`flex items-center justify-center gap-2 px-3 py-3 bg-emerald-50 text-emerald-700 border border-emerald-200/50 rounded-2xl font-bold text-xs transition-all ${
-                    ftuiStep === 4 ? 'opacity-30 pointer-events-none' : 'hover:bg-emerald-100 active:scale-95'
+                    (ftuiStep === 4 || ftuiStep === 61) ? 'opacity-30 pointer-events-none' : 'hover:bg-emerald-100 active:scale-95'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
                   {language === 'nl' ? 'Gazon toevoegen' : 'Add Lawn'}
                 </button>
                 <button
-                  disabled={ftuiStep === 4}
+                  disabled={ftuiStep === 4 || ftuiStep === 61}
                   onClick={handleAddTerrace}
                   className={`flex items-center justify-center gap-2 px-3 py-3 bg-slate-100 text-slate-700 border border-slate-200/50 rounded-2xl font-bold text-xs transition-all ${
-                    ftuiStep === 4 ? 'opacity-30 pointer-events-none' : 'hover:bg-slate-200 active:scale-95'
+                    (ftuiStep === 4 || ftuiStep === 61) ? 'opacity-30 pointer-events-none' : 'hover:bg-slate-200 active:scale-95'
                   }`}
                 >
                   <Plus className="w-4 h-4" />
@@ -486,10 +488,12 @@ export default function MapPage() {
                     setIsAddPlantModalOpen(true);
                     if (ftuiStep === 4) {
                       updateFtuiStep(5);
+                    } else if (ftuiStep === 61) {
+                      updateFtuiStep(62);
                     }
                   }}
                   className={`col-span-2 flex items-center justify-center gap-2 px-3 py-3 border rounded-2xl font-bold text-xs transition-all mt-1 ${
-                    ftuiStep === 4
+                    (ftuiStep === 4 || ftuiStep === 61)
                       ? 'relative z-[9999] bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-700 shadow-lg scale-102 animate-pulse pointer-events-auto'
                       : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200/50 active:scale-95'
                   }`}
