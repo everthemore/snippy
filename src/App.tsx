@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Leaf, Calendar as CalendarIcon, Zap, Map as MapIcon, Settings as SettingsIcon, Languages, User } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
@@ -16,6 +16,7 @@ import type { UserSession } from './types/garden';
 
 function AppContent() {
   const { language, setLanguage, t } = useLanguage();
+  const location = useLocation();
   const [session, setSession] = useState<UserSession | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [ftuiStep, setFtuiStep] = useState<number | null>(() => {
@@ -59,7 +60,7 @@ function AppContent() {
           };
 
           return (
-            <nav className={`w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full justify-between transition-all ${
+            <nav className={`w-64 bg-white border-r border-slate-200 lg:flex hidden flex-col fixed h-full justify-between transition-all ${
               isSidebarTourActive ? 'z-[9999]' : 'z-[60]'
             }`}>
               <div>
@@ -172,8 +173,90 @@ function AppContent() {
           );
         })()}
 
+        {/* Mobile/Tablet Top Header */}
+        <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 z-[60] shadow-sm">
+          <h1 className="text-xl font-bold text-emerald-600 flex items-center gap-2">
+            <Leaf className="w-6 h-6 text-emerald-500" />
+            <span>Snippy</span>
+          </h1>
+          
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => {
+                const nextLang = language === 'nl' ? 'en' : 'nl';
+                setLanguage(nextLang);
+              }}
+              className="text-xs font-black text-slate-400 bg-slate-100 hover:bg-slate-205 px-2.5 py-1.5 rounded-lg transition-colors font-sans"
+            >
+              {language === 'nl' ? 'EN' : 'NL'}
+            </button>
+            
+            <Link 
+              to="/settings" 
+              className={`p-2 text-slate-500 hover:text-slate-800 transition-colors rounded-lg ${location.pathname === '/settings' ? 'text-emerald-600 bg-emerald-50' : ''}`}
+              title={t('settings')}
+            >
+              <SettingsIcon className="w-5 h-5" />
+            </Link>
+            
+            {session && (
+              <button 
+                onClick={() => setIsProfileOpen(true)}
+                className="w-8 h-8 rounded-full border border-emerald-100 overflow-hidden shrink-0"
+              >
+                {session.avatarUrl ? (
+                  <img src={session.avatarUrl} alt={session.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                    <User className="w-4 h-4 text-slate-400" />
+                  </div>
+                )}
+              </button>
+            )}
+          </div>
+        </header>
+
+        {/* Mobile/Tablet Bottom Navigation Bar */}
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 flex items-center justify-around px-2 z-[60] shadow-lg">
+          <Link 
+            to="/" 
+            className={`flex flex-col items-center gap-0.5 text-slate-500 hover:text-emerald-650 ${location.pathname === '/' ? 'text-emerald-600 font-extrabold' : ''}`}
+          >
+            <LayoutDashboard className="w-5 h-5" />
+            <span className="text-[9px] font-bold">{t('dashboard')}</span>
+          </Link>
+          <Link 
+            to="/map" 
+            className={`flex flex-col items-center gap-0.5 text-slate-500 hover:text-emerald-650 ${location.pathname === '/map' ? 'text-emerald-600 font-extrabold' : ''}`}
+          >
+            <MapIcon className="w-5 h-5" />
+            <span className="text-[9px] font-bold">{t('gardenMap')}</span>
+          </Link>
+          <Link 
+            to="/inventory" 
+            className={`flex flex-col items-center gap-0.5 text-slate-500 hover:text-emerald-650 ${location.pathname === '/inventory' ? 'text-emerald-600 font-extrabold' : ''}`}
+          >
+            <Leaf className="w-5 h-5" />
+            <span className="text-[9px] font-bold">{t('inventory')}</span>
+          </Link>
+          <Link 
+            to="/calendar" 
+            className={`flex flex-col items-center gap-0.5 text-slate-500 hover:text-emerald-650 ${location.pathname === '/calendar' ? 'text-emerald-600 font-extrabold' : ''}`}
+          >
+            <CalendarIcon className="w-5 h-5" />
+            <span className="text-[9px] font-bold">{t('calendar')}</span>
+          </Link>
+          <Link 
+            to="/analysis" 
+            className={`flex flex-col items-center gap-0.5 text-slate-500 hover:text-emerald-650 ${location.pathname === '/analysis' ? 'text-emerald-600 font-extrabold' : ''}`}
+          >
+            <Zap className="w-5 h-5" />
+            <span className="text-[9px] font-bold">{language === 'nl' ? 'Analyse' : 'Analysis'}</span>
+          </Link>
+        </nav>
+
         {/* Main Content */}
-        <main className="flex-1 ml-64 min-h-screen">
+        <main className="flex-1 lg:ml-64 mt-16 pb-20 lg:mt-0 lg:pb-0 min-h-screen">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/inventory" element={<Inventory />} />

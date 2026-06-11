@@ -63,11 +63,15 @@ export default function Calendar() {
         </div>
       </div>
 
-      <div className={`mb-12 ${ftuiStep === 8 ? 'relative z-[9999] ring-4 ring-emerald-500 rounded-[32px] shadow-2xl p-4 bg-white transition-all duration-300' : ''}`}>
-        <TrimmingMatrix 
-          plants={plantsWithDetails} 
-          onCellClick={handleCellClick} 
-        />
+      <div className={`mb-12 overflow-x-auto w-full select-none ${
+        ftuiStep === 8 ? 'relative z-[9999] ring-4 ring-emerald-500 rounded-[32px] shadow-2xl p-4 bg-white transition-all duration-300' : ''
+      }`}>
+        <div className="min-w-[750px] md:min-w-0">
+          <TrimmingMatrix 
+            plants={plantsWithDetails} 
+            onCellClick={handleCellClick} 
+          />
+        </div>
       </div>
 
       <div className="bg-slate-900 rounded-[32px] p-8 text-white relative overflow-hidden">

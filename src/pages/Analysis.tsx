@@ -185,7 +185,7 @@ export default function AnalysisPage() {
         {/* Left Column: Select Plant & Upload Context */}
         <div className="space-y-8">
           {/* Step 1: Selection */}
-          <section className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-slate-100 shadow-sm space-y-6">
             <h3 className="text-xl font-bold text-slate-800 flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 text-sm">1</span>
               {t('doctorSelectPlant')}
@@ -278,7 +278,7 @@ export default function AnalysisPage() {
           </section>
 
           {/* Step 2: Photo Upload & Question */}
-          <section className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-6">
+          <section className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-slate-100 shadow-sm space-y-6">
             <h3 className="text-xl font-bold text-slate-800 flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 text-sm">2</span>
               {language === 'nl' ? 'Upload Foto & Stel Vraag' : 'Attach Photo & Ask'}
@@ -316,7 +316,7 @@ export default function AnalysisPage() {
         {/* Right Column: AI Response */}
         <div>
           {isGenerating ? (
-            <div className="h-full bg-slate-50 rounded-[40px] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center p-12 text-center min-h-[400px]">
+            <div className="h-full bg-slate-50 rounded-[32px] sm:rounded-[40px] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 sm:p-12 text-center min-h-[400px]">
               <div className="relative mb-6">
                 <div className="absolute inset-0 bg-emerald-500/20 animate-ping rounded-full scale-150" />
                 <Loader2 className="w-12 h-12 text-emerald-600 animate-spin relative z-10" />
@@ -325,7 +325,7 @@ export default function AnalysisPage() {
               <p className="text-slate-400 max-w-xs mx-auto text-sm">{aiProgress}</p>
             </div>
           ) : adviceResponse ? (
-            <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-6 min-h-[400px]">
+            <div className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-slate-100 shadow-sm space-y-6 min-h-[400px]">
               <div className="flex items-center justify-between border-b border-slate-50 pb-4 mb-4">
                 <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                   <Check className="w-6 h-6 text-emerald-500 bg-emerald-50 p-1 rounded-full" />
@@ -338,7 +338,7 @@ export default function AnalysisPage() {
               </div>
             </div>
           ) : (
-            <div className="h-full bg-slate-50 rounded-[40px] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center p-12 text-center text-slate-300 min-h-[400px]">
+            <div className="h-full bg-slate-50 rounded-[32px] sm:rounded-[40px] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center p-6 sm:p-12 text-center text-slate-300 min-h-[400px]">
               <Zap className="w-16 h-16 mb-4 opacity-20 text-slate-400" />
               <p className="font-bold text-lg text-slate-400">{language === 'nl' ? 'Wacht op vraag' : 'Waiting for question'}</p>
               <p className="text-sm text-slate-400 mt-2 max-w-xs mx-auto">

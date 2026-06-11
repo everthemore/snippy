@@ -10,10 +10,10 @@ interface PlantCardProps {
   gardenPlant: GardenPlant;
   plantDetails: Plant;
   onDelete?: (id: string) => void;
-  isFirstCard?: boolean;
+  isFtuiTarget?: boolean;
 }
 
-const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDelete, isFirstCard }) => {
+const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDelete, isFtuiTarget }) => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -101,7 +101,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDele
           />
           {onDelete && (
             <button 
-              disabled={ftuiStep !== null && (ftuiStep !== 92 || !isFirstCard)}
+              disabled={ftuiStep !== null && (ftuiStep !== 92 || !isFtuiTarget)}
               onClick={(e) => {
                 e.stopPropagation();
                 if (ftuiStep === 92 || confirm(t('confirmDelete', { name: gardenPlant.nickname || plantDetails.commonName }))) {
@@ -109,7 +109,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDele
                 }
               }}
               className={`p-2 rounded-full shadow-sm transition-all ${
-                isFirstCard && ftuiStep === 92
+                isFtuiTarget && ftuiStep === 92
                   ? 'relative z-[9999] bg-rose-600 text-white ring-4 ring-rose-450 scale-115 animate-pulse pointer-events-auto'
                   : ftuiStep !== null
                     ? 'opacity-20 pointer-events-none text-slate-300'
@@ -131,9 +131,9 @@ const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDele
           </div>
           <button 
             onClick={handleOpenInfo}
-            disabled={ftuiStep !== null && (ftuiStep !== 9 || !isFirstCard)}
+            disabled={ftuiStep !== null && (ftuiStep !== 9 || !isFtuiTarget)}
             className={`p-2 transition-all rounded-full ${
-              isFirstCard && ftuiStep === 9
+              isFtuiTarget && ftuiStep === 9
                 ? 'relative z-[9999] bg-emerald-50 text-emerald-600 ring-4 ring-emerald-450 scale-110 animate-pulse pointer-events-auto'
                 : ftuiStep !== null
                   ? 'text-slate-300 opacity-20 pointer-events-none'
@@ -201,7 +201,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ gardenPlant, plantDetails, onDele
 
     {isInfoModalOpen && (
       <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200">
-        <div className="bg-white rounded-[32px] shadow-2xl border border-slate-100 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-8 relative flex flex-col gap-6 animate-in zoom-in-95 duration-200">
+        <div className="bg-white rounded-[32px] shadow-2xl border border-slate-100 max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 relative flex flex-col gap-6 animate-in zoom-in-95 duration-200">
           {/* Close button */}
           <button 
             onClick={handleCloseInfo}

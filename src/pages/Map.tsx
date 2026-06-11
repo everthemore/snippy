@@ -25,6 +25,7 @@ export default function MapPage() {
     const s = localStorage.getItem('snippy_ftui_step');
     return s ? parseInt(s, 10) : null;
   });
+  const [mobileView, setMobileView] = useState<'map' | 'sidebar'>('map');
 
   useEffect(() => {
     const handleSync = () => {
@@ -266,6 +267,7 @@ export default function MapPage() {
     
     const currentStep = localStorage.getItem('snippy_ftui_step');
     if (currentStep === '6' || currentStep === '5') {
+      localStorage.setItem('snippy_ftui_added_plant_id', newPlant.id);
       updateFtuiStep(7);
     }
     
@@ -307,11 +309,35 @@ export default function MapPage() {
         </div>
       </div>
 
+      {/* Mobile View Toggle */}
+      <div className="lg:hidden flex bg-slate-100 p-1 rounded-2xl border border-slate-200 mb-2">
+        <button
+          onClick={() => setMobileView('map')}
+          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
+            mobileView === 'map'
+              ? 'bg-white text-emerald-700 shadow-sm'
+              : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          {language === 'nl' ? 'Kaart' : 'Map'}
+        </button>
+        <button
+          onClick={() => setMobileView('sidebar')}
+          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
+            mobileView === 'sidebar'
+              ? 'bg-white text-emerald-700 shadow-sm'
+              : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          {language === 'nl' ? 'Opties' : 'Options'}
+        </button>
+      </div>
+
       {/* Main layout: sidebar (col-1) + map (col-2) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
         {/* ── Sidebar ── */}
-        <div className="space-y-6">
+        <div className={`space-y-6 ${mobileView === 'sidebar' ? 'block' : 'lg:block hidden'}`}>
 
           {/* Address */}
           <section className={`bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm space-y-4 ${
@@ -518,7 +544,7 @@ export default function MapPage() {
         </div>
 
         {/* ── Map card (col-span-2) ── */}
-        <div className={`lg:col-span-2 relative ${
+        <div className={`lg:col-span-2 relative ${mobileView === 'map' ? 'block' : 'lg:block hidden'} ${
           ftuiStep === 7 ? 'relative z-[9999] ring-4 ring-emerald-500 rounded-[40px] shadow-2xl scale-[1.01] transition-transform' : ''
         }`}>
           {isSyncing ? (
@@ -529,7 +555,7 @@ export default function MapPage() {
               </p>
             </div>
           ) : garden ? (
-            <div className="relative rounded-[40px] overflow-hidden shadow-xl border border-slate-100 h-[560px]">
+            <div className="relative rounded-[40px] overflow-hidden shadow-xl border border-slate-100 h-[450px] sm:h-[560px]">
               {canvasContent}
               
               {/* Done Editing floating bar */}
@@ -569,9 +595,9 @@ export default function MapPage() {
         </div>
       </div>
 
-      {/* Fullscreen overlay: covers everything except the fixed nav (left-64) */}
+      {/* Fullscreen overlay: covers everything except the fixed nav (left-64 on desktop) */}
       {isFullScreen && garden && (
-        <div className="fixed inset-0 left-64 z-50 bg-white flex flex-col">
+        <div className="fixed inset-0 lg:left-64 z-50 bg-white flex flex-col">
           <div className="flex justify-between items-center p-3 border-b border-slate-100 bg-white">
             <div />
 

@@ -113,7 +113,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Garden SVG Map Card (read-only) — shown only if address is active */}
         {hasAddress && activeGarden && (
-          <div className="lg:col-span-2 bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col p-8 h-[520px]">
+          <div className="lg:col-span-2 bg-white rounded-[32px] sm:rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col p-6 sm:p-8 h-[380px] sm:h-[520px]">
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h3 className="text-2xl font-bold text-slate-800">{language === 'nl' ? 'Mijn Tuinkaart' : 'My Garden Map'}</h3>
@@ -145,9 +145,9 @@ export default function Dashboard() {
         {/* Sidebar Cards Column */}
         <div className={`space-y-8 ${hasAddress ? 'lg:col-span-1' : 'lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8 space-y-0'}`}>
           <Link to="/inventory" className="block group">
-            <div className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all flex items-center justify-between">
+            <div className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all flex items-center justify-between">
               <div className="flex items-center gap-6">
-                <div className="p-4 bg-emerald-50 rounded-2xl group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                <div className="p-4 bg-emerald-50 rounded-2xl group-hover:bg-emerald-500 group-hover:text-white transition-colors shrink-0">
                   <Leaf className="w-8 h-8" />
                 </div>
                 <div>
@@ -160,9 +160,9 @@ export default function Dashboard() {
           </Link>
 
           <Link to="/calendar" className="block group">
-            <div className="bg-slate-900 p-8 rounded-[40px] shadow-xl hover:shadow-2xl transition-all flex items-center justify-between">
-              <div className="flex items-center gap-6 text-white">
-                <div className="p-4 bg-white/10 rounded-2xl group-hover:bg-emerald-500 transition-colors">
+            <div className="bg-slate-900 p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-xl hover:shadow-2xl transition-all flex items-center justify-between">
+              <div className="flex items-center gap-6 text-white min-w-0">
+                <div className="p-4 bg-white/10 rounded-2xl group-hover:bg-emerald-500 transition-colors shrink-0">
                   <Calendar className="w-8 h-8" />
                 </div>
                 <div>

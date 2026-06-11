@@ -88,6 +88,7 @@ export default function FtuiGuide() {
   const updateStep = (newStep: number | null) => {
     if (newStep === null || newStep <= 0) {
       localStorage.removeItem('snippy_ftui_step');
+      localStorage.removeItem('snippy_ftui_added_plant_id');
       localStorage.setItem('snippy_ftui_completed', 'true');
       setStep(null);
     } else {

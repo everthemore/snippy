@@ -85,6 +85,7 @@ export default function Inventory() {
 
     const currentStep = localStorage.getItem('snippy_ftui_step');
     if (currentStep === '92') {
+      localStorage.removeItem('snippy_ftui_added_plant_id');
       localStorage.setItem('snippy_ftui_step', '10');
       window.dispatchEvent(new Event('ftuiStateChange'));
     }
@@ -143,26 +144,34 @@ export default function Inventory() {
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredPlants.map((gp, index) => {
-          const details = db.getPlantDetails(gp.plantId);
-          if (!details) return null;
-          return (
-            <div 
-              key={gp.id} 
-              className={index === 0 && [9, 92].includes(ftuiStep || 0)
-                ? 'relative z-[9999] ring-4 ring-emerald-500 rounded-[32px] bg-white shadow-2xl scale-[1.01] transition-transform' 
-                : ''
-              }
-            >
-              <PlantCard 
-                gardenPlant={gp} 
-                plantDetails={details} 
-                onDelete={handleDeletePlant} 
-                isFirstCard={index === 0}
-              />
-            </div>
-          );
-        })}
+        {(() => {
+          const ftuiAddedPlantId = localStorage.getItem('snippy_ftui_added_plant_id');
+          const hasAddedPlant = ftuiAddedPlantId ? filteredPlants.some(p => p.id === ftuiAddedPlantId) : false;
+
+          return filteredPlants.map((gp, index) => {
+            const details = db.getPlantDetails(gp.plantId);
+            if (!details) return null;
+
+            const isFtuiTarget = hasAddedPlant ? gp.id === ftuiAddedPlantId : index === 0;
+
+            return (
+              <div 
+                key={gp.id} 
+                className={isFtuiTarget && [9, 92].includes(ftuiStep || 0)
+                  ? 'relative z-[9999] ring-4 ring-emerald-500 rounded-[32px] bg-white shadow-2xl scale-[1.01] transition-transform' 
+                  : ''
+                }
+              >
+                <PlantCard 
+                  gardenPlant={gp} 
+                  plantDetails={details} 
+                  onDelete={handleDeletePlant} 
+                  isFtuiTarget={isFtuiTarget}
+                />
+              </div>
+            );
+          });
+        })()}
       </div>
 
       {/* Add Plant Modal */}

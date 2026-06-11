@@ -7,6 +7,13 @@ import { db } from "../data/db";
 
 export type AIProviderType = 'local' | 'gemini' | 'custom';
 
+function isMobileOrTablet(): boolean {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  const isTouch = navigator.maxTouchPoints && navigator.maxTouchPoints > 2;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || !!isTouch;
+}
+
 class AIProvider {
   private engine: MLCEngineInterface | null = null;
   private isInitializing = false;
@@ -66,6 +73,13 @@ class AIProvider {
 
   async init(onProgress?: (progress: InitProgressReport) => void) {
     if (this.getProviderType() !== 'local') return; // Cloud APIs don't need WebLLM setup
+    const isDutch = i18n.getLanguage() === 'nl';
+    if (isMobileOrTablet()) {
+      throw new Error(isDutch
+        ? "Lokale Snoei-Engines (WebLLM) worden niet ondersteund op mobiele of tablet apparaten vanwege browser geheugenlimieten. Voer een Gemini of Custom API-sleutel in bij Instellingen."
+        : "Local AI engines (WebLLM) are not supported on mobile/tablet devices due to browser memory limits. Please configure a Gemini or Custom API key in Settings."
+      );
+    }
     if (this.engine) return;
     if (this.isInitializing) {
       while (this.isInitializing) {
@@ -105,6 +119,15 @@ class AIProvider {
     const provider = this.getProviderType();
     const activeLang = i18n.getLanguage();
     const isDutch = activeLang === 'nl';
+
+    if (provider === 'local') {
+      if (isMobileOrTablet()) {
+        throw new Error(isDutch
+          ? "Lokale Snoei-Engines (WebLLM) worden niet ondersteund op mobiele of tablet apparaten vanwege browser geheugenlimieten. Voer een Gemini of Custom API-sleutel in bij Instellingen."
+          : "Local AI engines (WebLLM) are not supported on mobile/tablet devices due to browser memory limits. Please configure a Gemini or Custom API key in Settings."
+        );
+      }
+    }
     const langName = isDutch ? "Dutch (Nederlands)" : "English";
 
     const systemPrompt = `You are an expert botanist API. 
@@ -286,6 +309,15 @@ Do not use generic placeholders; customize every tip specifically for the target
     const provider = this.getProviderType();
     const activeLang = i18n.getLanguage();
     const isDutch = activeLang === 'nl';
+
+    if (provider === 'local') {
+      if (isMobileOrTablet()) {
+        throw new Error(isDutch
+          ? "Lokale Snoei-Engines (WebLLM) worden niet ondersteund op mobiele of tablet apparaten vanwege browser geheugenlimieten. Voer een Gemini of Custom API-sleutel in bij Instellingen."
+          : "Local AI engines (WebLLM) are not supported on mobile/tablet devices due to browser memory limits. Please configure a Gemini or Custom API key in Settings."
+        );
+      }
+    }
     
     // Fetch weather forecast if coordinates exist
     let weatherContext = "";

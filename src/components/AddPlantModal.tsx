@@ -198,13 +198,13 @@ const AddPlantModal: React.FC<AddPlantModalProps> = ({ isOpen, onClose, onAdd })
       );
       
       onAdd(dynamicPlant, config);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setAiProgress(t('unableToFetch'));
+      setAiProgress(e?.message || t('unableToFetch'));
       setTimeout(() => {
         setStep('configure');
         setAiProgress('');
-      }, 2000);
+      }, 5000);
     } finally {
       setIsProcessing(false);
     }
